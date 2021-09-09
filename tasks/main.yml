@@ -1,6 +1,4 @@
 ---
-- include: preflight.yml
-
 - name: Create the SQL Exporter group
   become: true
   group:
@@ -36,7 +34,6 @@
 #         https://github.com/free/sql_exporter/releases/download/0.5/sql_exporter-0.5.linux-amd64.tar.gz
     url: "https://github.com/free/sql_exporter/releases/download/{{ sql_exporter_version }}/sql_exporter-{{ sql_exporter_version }}.linux-{{ go_arch_map[ansible_architecture] | default(ansible_architecture) }}.tar.gz"
     dest: "/tmp/sql_exporter-{{ sql_exporter_version }}.linux-{{ go_arch_map[ansible_architecture] | default(ansible_architecture) }}.tar.gz"
-    checksum: "sha256:{{ __sql_exporter_checksum }}"
   register: _download_binary
   until: _download_binary is succeeded
   retries: 5
@@ -65,10 +62,8 @@
 
 - name: Configure SQL Exporter
   become: true
-  copy:
-#  template:
-    src: "{{ sql_exporter_config_file }}"
-#    src: "{{ sql_exporter_config_file_template }}"
+  template:
+    src: "{{ sql_exporter_config_file_template }}"
     dest: "{{ sql_exporter_config_dir }}/{{ sql_exporter_config_file }}"
     force: true
     owner: root
@@ -87,8 +82,7 @@
     group: "{{ __sql_exporter_group }}"
     mode: 0640
   with_fileglob:
-   - collectors/*.collector.yml
-#   - "{{ sql_exporter_collector_files_dir }}/*.yml"
+   - "{{ sql_exporter_collector_files_dir }}/*.yml"
   notify:
     - restart sql exporter
 

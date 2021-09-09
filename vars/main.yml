@@ -6,5 +6,5 @@ go_arch_map:
   armv7l: 'armv7'
   armv6l: 'armv6'
 
-__sql_exporter_user: sql_exp
-__sql_exporter_group: sql_exp
+__sql_exporter_user: sql_exporter
+__sql_exporter_group: sql_exporter
